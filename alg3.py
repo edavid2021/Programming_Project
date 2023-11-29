@@ -51,17 +51,30 @@ i_value = int(2 * len(input_sizes) / 3)
 print("n\tTheoreticalRT\tEmpiricalRT (ms)\tRatio\tPredictedRT")
 
 for n in input_sizes:
-    theoretical_running_time = n * (n-1) / 2  # O(n log(n))
+    theoretical_running_time = n  # O(n)
 
-    # Run the algorithm multiple times and calculate average running time
+    # Run the algorithm multiple times and calculate running time
     total_empirical_running_time = 0
+    ratios = []
+
     for _ in range(iterations):
         input_array = generate_random_array(n)
         _, empirical_running_time = measure_running_time(randomized_select, input_array, 0, n - 1, i_value)
         total_empirical_running_time += empirical_running_time
+        
+        # Calculate ratio
+        ratio = empirical_running_time / theoretical_running_time
+        ratios.append(ratio)
 
+    # Compute c1 excluding the maximum value
+    c1 = max(ratios)
+
+    # Compute PredictedRT
+    predicted_running_time = c1 * theoretical_running_time
+    
+    # Calculate average empirical running time
     average_empirical_running_time = total_empirical_running_time / iterations
-    ratio = average_empirical_running_time / theoretical_running_time
 
     # Format the output for better readability
-    print(f"{n}\t{theoretical_running_time:.2f}\t\t{average_empirical_running_time:.2f}\t\t{ratio:.8f}\t{ratio * theoretical_running_time:.2f}")
+    print(f"{n}\t{theoretical_running_time:.2f}\t\t{average_empirical_running_time:.2f}\t\t{ratio:.8f}\t{predicted_running_time:.2f}")
+  
